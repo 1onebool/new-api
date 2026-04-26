@@ -1,6 +1,7 @@
 import HeroSection from './sections/HeroSection';
 import ToolsSection from './sections/ToolsSection';
 import OpenClawSection from './sections/OpenClawSection';
+import ClaudeCodeSetupSection from './sections/ClaudeCodeSetupSection';
 import GeminiSetupSection from './sections/GeminiSetupSection';
 import CallToActionSection from './sections/CallToActionSection';
 import TermsSection from './sections/TermsSection';
@@ -11,6 +12,7 @@ const HelpContent = ({ config }) => (
     <HeroSection config={config} />
     <ToolsSection config={config} />
     <OpenClawSection config={config} />
+    <ClaudeCodeSetupSection config={config} />
     <GeminiSetupSection config={config} />
     <CallToActionSection config={config} />
     <TermsSection config={config} />
