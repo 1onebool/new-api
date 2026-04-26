@@ -177,14 +177,16 @@ body[theme-mode="dark"] .home1bool-root {
 }
 
 /* Focus states for accessibility */
-*:focus-visible {
+.home1bool-root *:focus-visible {
   outline: 2px solid var(--accent-blue);
   outline-offset: 2px;
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
+  .home1bool-root *,
+  .home1bool-root ::before,
+  .home1bool-root ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -192,14 +194,14 @@ body[theme-mode="dark"] .home1bool-root {
 }
 
 /* Prevent animations on page load */
-.preload * {
+.home1bool-root .preload * {
   animation-duration: 0s !important;
   animation-delay: 0s !important;
   transition-duration: 0s !important;
   transition-delay: 0s !important;
 }
 
-/* Scroll reveal (used by App.tsx) */
+/* Scroll reveal (used by index.jsx) */
 .scroll-reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -411,119 +413,7 @@ body[theme-mode="dark"] .home1bool-root {
   .hero-logos { gap: 24px; font-size: 12px; }
 }
 
-/* ========== Site Nav (merged) ========== */
-.site-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  height: 56px;
-  transition: background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
-}
-
-.site-nav-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-}
-
-.site-nav-brand {
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-decoration: none;
-  color: inherit;
-}
-
-.site-nav-tabs {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.site-nav-tab {
-  padding: 0.4rem 0.9rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-decoration: none;
-  color: inherit;
-  opacity: 0.72;
-  border-radius: 0.375rem;
-  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
-}
-
-.site-nav-tab:hover {
-  opacity: 1;
-}
-
-.site-nav-console {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 1.1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 0.5rem;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-/* -------- nav-on-hero (on Hero, translucent dark glass) -------- */
-.site-nav.nav-on-hero {
-  background: rgba(7, 8, 15, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.9);
-}
-.site-nav.nav-on-hero .site-nav-tab:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-}
-.site-nav.nav-on-hero .site-nav-console {
-  background: #ffffff;
-  color: #0B0D1A;
-}
-.site-nav.nav-on-hero .site-nav-console:hover {
-  transform: translateY(-1px);
-  background: #f1f5f9;
-}
-
-/* -------- nav-on-body (after scrolling past Hero) -------- */
-.site-nav.nav-on-body {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--card-border);
-  color: var(--text-primary);
-}
-.site-nav.nav-on-body .site-nav-tab:hover {
-  background: rgba(107, 142, 242, 0.08);
-  color: var(--accent-blue);
-}
-.site-nav.nav-on-body .site-nav-console {
-  background: var(--accent-blue);
-  color: #fff;
-}
-.site-nav.nav-on-body .site-nav-console:hover {
-  transform: translateY(-1px);
-  background: var(--accent-blue-hover);
-}
-
-body[theme-mode="dark"] .home1bool-root .site-nav.nav-on-body {
-  background: rgba(12, 15, 26, 0.92);
-}
-
-@media (max-width: 768px) {
-  .site-nav-tabs { display: none; }
-  .site-nav-inner { padding: 0 1rem; }
-}
+/* SiteNav 相关样式已移除（迁移版不渲染 SiteNav，复用主站 HeaderBar） */
 
 /* ========== Tools Section ========== */
 .tools {
