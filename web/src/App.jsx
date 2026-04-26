@@ -50,6 +50,8 @@ import PersonalSetting from './components/settings/PersonalSetting';
 import Setup from './pages/Setup';
 import SetupCheck from './components/layout/SetupCheck';
 
+import Home1Bool from './pages/Home1Bool';
+
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const About = lazy(() => import('./pages/About'));
@@ -94,7 +96,7 @@ function App() {
           path='/'
           element={
             <Suspense fallback={<Loading></Loading>} key={location.pathname}>
-              <Home />
+              <Home1Bool />
             </Suspense>
           }
         />
