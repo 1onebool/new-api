@@ -2,6 +2,7 @@ import HeroSection from './sections/HeroSection';
 import ToolsSection from './sections/ToolsSection';
 import OpenClawSection from './sections/OpenClawSection';
 import CallToActionSection from './sections/CallToActionSection';
+import TermsSection from './sections/TermsSection';
 import PrivacySection from './sections/PrivacySection';
 
 const HelpContent = ({ config }) => (
@@ -10,6 +11,7 @@ const HelpContent = ({ config }) => (
     <ToolsSection config={config} />
     <OpenClawSection config={config} />
     <CallToActionSection config={config} />
+    <TermsSection config={config} />
     <PrivacySection config={config} />
   </>
 );
