@@ -1,8 +1,9 @@
+import HeroSection from './sections/HeroSection';
+
 const HelpContent = ({ config }) => (
-  <div style={{ padding: 24 }}>
-    <h1>Home1Bool 脚手架</h1>
-    <p>API: {config.apiName} / Host: {config.apiHost}</p>
-  </div>
+  <>
+    <HeroSection config={config} />
+  </>
 );
 
 export default HelpContent;
