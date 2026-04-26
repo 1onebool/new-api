@@ -50,9 +50,8 @@ import PersonalSetting from './components/settings/PersonalSetting';
 import Setup from './pages/Setup';
 import SetupCheck from './components/layout/SetupCheck';
 
-import Home1Bool from './pages/Home1Bool';
-
 const Home = lazy(() => import('./pages/Home'));
+const Home1Bool = lazy(() => import('./pages/Home1Bool'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const About = lazy(() => import('./pages/About'));
 const UserAgreement = lazy(() => import('./pages/UserAgreement'));
