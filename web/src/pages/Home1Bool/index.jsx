@@ -214,8 +214,11 @@ const Home1Bool = () => {
           }
         }
       }
-      const rippleTarget = target.closest('a, button');
-      if (rippleTarget) createRipple(event, rippleTarget);
+      // ripple 限定在 Home1Bool 内部，避免污染主站 HeaderBar / Sidebar 按钮
+      if (target.closest('.home1bool-root')) {
+        const rippleTarget = target.closest('a, button');
+        if (rippleTarget) createRipple(event, rippleTarget);
+      }
     };
 
     // 全局函数挂载（HTML 模板内的 inline onclick 用到）
