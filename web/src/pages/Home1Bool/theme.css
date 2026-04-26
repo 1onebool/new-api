@@ -81,7 +81,7 @@ body[theme-mode="dark"] .home1bool-root {
 
 /* Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue), #5A7DE0);
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue), var(--accent-blue-hover));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

@@ -6,7 +6,7 @@ const CodexSetupSection = ({ config }) => {
             <div class="text-center mb-24">
                 <h2 class="text-5xl font-bold text-[var(--text-primary)] mb-8">CodeX 安装步骤</h2>
                 <p class="text-xl text-[var(--text-secondary)] max-w-3xl mx-auto">强大的 OpenAI 代码助手安装指南</p>
-                <div class="w-32 h-1 bg-gradient-to-r from-[#818CF8] to-[var(--accent-blue)] mx-auto mt-8 rounded-full"></div>
+                <div class="w-32 h-1 bg-gradient-to-r from-[color:var(--accent-cyan)] to-[color:var(--accent-blue)] mx-auto mt-8 rounded-full"></div>
             </div>
             
             <!-- CodeX 快速开始 -->
