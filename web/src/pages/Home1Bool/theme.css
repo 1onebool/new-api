@@ -111,6 +111,154 @@ body.home1bool-page .semi-layout-header > header .semi-button:not(.semi-button-p
   background-color: var(--cool-bg-alt);
 }
 
+/* 文档目录：只在 Home1Bool 内提供长文档跳转，不接管主站 HeaderBar */
+.home1bool-root .home1bool-doc-nav {
+  position: fixed;
+  top: 96px;
+  left: max(16px, calc((100vw - 1320px) / 2));
+  z-index: 45;
+  width: 168px;
+  padding: 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(16px);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-8px);
+  transition: opacity 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+
+.home1bool-root .home1bool-doc-nav.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.home1bool-root .home1bool-doc-nav-title {
+  padding: 2px 8px 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.home1bool-root .home1bool-doc-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.home1bool-root .home1bool-doc-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.home1bool-root .home1bool-doc-nav-link:hover {
+  color: var(--accent-blue);
+  background: var(--semi-color-primary-light-default);
+}
+
+.home1bool-root .home1bool-doc-nav-link.is-active {
+  color: var(--accent-blue);
+  background: var(--semi-color-primary-light-default);
+  transform: translateX(2px);
+}
+
+.home1bool-root .home1bool-doc-nav-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 999px;
+  background: var(--card-border);
+  transition: background 0.16s ease, transform 0.16s ease;
+}
+
+.home1bool-root .home1bool-doc-nav-link.is-active .home1bool-doc-nav-dot {
+  background: var(--accent-blue);
+  transform: scale(1.2);
+}
+
+body[theme-mode="dark"] .home1bool-root .home1bool-doc-nav {
+  background: rgba(24, 24, 27, 0.86);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body[theme-mode="dark"] .home1bool-root .home1bool-doc-nav-link:hover,
+body[theme-mode="dark"] .home1bool-root .home1bool-doc-nav-link.is-active {
+  background: rgba(84, 169, 255, 0.16);
+}
+
+@media (max-width: 1279px) {
+  .home1bool-root {
+    padding-bottom: 76px;
+  }
+
+  .home1bool-root .home1bool-doc-nav {
+    top: auto;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    left: 12px;
+    width: auto;
+    padding: 8px;
+    border-radius: 16px;
+    transform: translateY(10px);
+  }
+
+  .home1bool-root .home1bool-doc-nav.is-visible {
+    transform: translateY(0);
+  }
+
+  .home1bool-root .home1bool-doc-nav-title {
+    display: none;
+  }
+
+  .home1bool-root .home1bool-doc-nav-list {
+    flex-direction: row;
+    gap: 6px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .home1bool-root .home1bool-doc-nav-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home1bool-root .home1bool-doc-nav-link {
+    flex: 0 0 auto;
+    min-height: 36px;
+    white-space: nowrap;
+  }
+
+  .home1bool-root .home1bool-doc-nav-link.is-active {
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .home1bool-root .home1bool-doc-nav {
+    right: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    left: 8px;
+  }
+
+  .home1bool-root .home1bool-doc-nav-link {
+    padding: 8px 9px;
+    font-size: 12px;
+  }
+}
+
 /* 项目 Tailwind 仅保留 Semi 色板；这里补齐本页面迁移内容用到的默认色彩工具类 */
 .home1bool-root .text-white { color: #ffffff !important; }
 .home1bool-root .text-gray-300 { color: #d1d5db !important; }

@@ -1,14 +1,25 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useActualTheme } from '../../context/Theme';
 import HelpContent from './HelpContent';
 import { APP_CONFIG } from './config';
 import './theme.css';
 
 const ANCHOR_OFFSET = 80; // 主站 HeaderBar 64px + 16px 边距
+const DOC_NAV_ITEMS = [
+  { id: 'tools', label: '工具总览' },
+  { id: 'openclaw-setup', label: 'OpenClaw' },
+  { id: 'claude-code-setup', label: 'Claude Code' },
+  { id: 'codex-setup', label: 'CodeX' },
+  { id: 'gemini-setup', label: 'Gemini CLI' },
+  { id: 'terms', label: '服务条款' },
+  { id: 'privacy', label: '隐私政策' },
+];
 
 const Home1Bool = () => {
   const actualTheme = useActualTheme();
   const rootRef = useRef(null);
+  const [activeDocSection, setActiveDocSection] = useState(DOC_NAV_ITEMS[0].id);
+  const [isDocNavVisible, setIsDocNavVisible] = useState(false);
 
   useEffect(() => {
     let reveals = [];
@@ -198,10 +209,35 @@ const Home1Bool = () => {
       }
     };
 
+    const updateDocNavState = () => {
+      const root = getRoot();
+      if (!root) return;
+      const firstSection = root.querySelector(`#${DOC_NAV_ITEMS[0].id}`);
+      const lastSection = root.querySelector(`#${DOC_NAV_ITEMS[DOC_NAV_ITEMS.length - 1].id}`);
+      if (!firstSection || !lastSection) return;
+
+      const probeLine = ANCHOR_OFFSET + 24;
+      const shouldShow = (
+        firstSection.getBoundingClientRect().top <= window.innerHeight - 160
+        && lastSection.getBoundingClientRect().bottom >= probeLine
+      );
+      setIsDocNavVisible(shouldShow);
+
+      let nextActive = DOC_NAV_ITEMS[0].id;
+      DOC_NAV_ITEMS.forEach((item) => {
+        const section = root.querySelector(`#${item.id}`);
+        if (section && section.getBoundingClientRect().top <= probeLine) {
+          nextActive = item.id;
+        }
+      });
+      setActiveDocSection(nextActive);
+    };
+
     const handleScroll = () => {
       if (scrollTimeout !== null) return;
       scrollTimeout = window.setTimeout(() => {
         revealOnScroll();
+        updateDocNavState();
         scrollTimeout = null;
       }, 16);
     };
@@ -250,6 +286,11 @@ const Home1Bool = () => {
         if (href) {
           const targetEl = root.querySelector(href);
           if (targetEl) {
+            const docItem = DOC_NAV_ITEMS.find((item) => `#${item.id}` === href);
+            if (docItem) {
+              setActiveDocSection(docItem.id);
+              setIsDocNavVisible(true);
+            }
             scrollToTarget(targetEl);
             history.pushState(null, '', href);
           }
@@ -283,6 +324,7 @@ const Home1Bool = () => {
     const root = getRoot();
     reveals = root ? Array.from(root.querySelectorAll('.fade-in-up')) : [];
     revealOnScroll();
+    updateDocNavState();
     codexSetupToggle('windows');
     enhanceCodeBlocks('#codex-setup');
 
@@ -293,6 +335,11 @@ const Home1Bool = () => {
         setTimeout(() => {
           const targetEl = root?.querySelector(hash);
           if (targetEl) {
+            const docItem = DOC_NAV_ITEMS.find((item) => `#${item.id}` === hash);
+            if (docItem) {
+              setActiveDocSection(docItem.id);
+              setIsDocNavVisible(true);
+            }
             scrollToTarget(targetEl);
           }
         }, 100);
@@ -322,6 +369,28 @@ const Home1Bool = () => {
 
   return (
     <div ref={rootRef} className="home1bool-root" data-theme={actualTheme}>
+      <nav
+        className={`home1bool-doc-nav ${isDocNavVisible ? 'is-visible' : ''}`}
+        aria-label="文档目录"
+      >
+        <div className="home1bool-doc-nav-title">文档目录</div>
+        <div className="home1bool-doc-nav-list">
+          {DOC_NAV_ITEMS.map((item) => {
+            const isActive = activeDocSection === item.id;
+            return (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className={`home1bool-doc-nav-link ${isActive ? 'is-active' : ''}`}
+                aria-current={isActive ? 'true' : undefined}
+              >
+                <span className="home1bool-doc-nav-dot" aria-hidden="true" />
+                <span>{item.label}</span>
+              </a>
+            );
+          })}
+        </div>
+      </nav>
       <HelpContent config={APP_CONFIG} />
     </div>
   );
