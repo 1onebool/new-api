@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useActualTheme } from '../../context/Theme';
 import HelpContent from './HelpContent';
 import { APP_CONFIG } from './config';
@@ -8,29 +8,48 @@ const ANCHOR_OFFSET = 80; // 主站 HeaderBar 64px + 16px 边距
 
 const Home1Bool = () => {
   const actualTheme = useActualTheme();
+  const rootRef = useRef(null);
 
   useEffect(() => {
     let reveals = [];
     let scrollTimeout = null;
+    let scrollContainers = [];
+    const getRoot = () => rootRef.current;
+
+    document.body.classList.add('home1bool-page');
 
     const toggleContent = (contentSelector, selectedId) => {
-      document.querySelectorAll(contentSelector).forEach((el) => {
+      const root = getRoot();
+      if (!root) return;
+      root.querySelectorAll(contentSelector).forEach((el) => {
         el.classList.add('hidden');
       });
-      const selected = document.getElementById(selectedId);
+      const selected = root.querySelector(`#${selectedId}`);
       if (selected) selected.classList.remove('hidden');
     };
 
+    const INACTIVE_TAB_CLASSES = [
+      'text-[color:var(--text-secondary)]',
+      'hover:bg-[color:var(--cool-bg-alt)]',
+    ];
+    const INACTIVE_TAB_CLASS_POOL = [
+      ...INACTIVE_TAB_CLASSES,
+      'text-gray-600',
+      'hover:bg-gray-100',
+    ];
+
     const setButtonState = (buttonSelector, selectedId, options) => {
+      const root = getRoot();
+      if (!root) return;
       const { inactiveClasses, activeClasses, resetClasses } = options;
       const classesToRemove = resetClasses ?? activeClasses;
-      document.querySelectorAll(buttonSelector).forEach((btn) => {
-        btn.classList.remove(...classesToRemove);
+      root.querySelectorAll(buttonSelector).forEach((btn) => {
+        btn.classList.remove(...classesToRemove, ...INACTIVE_TAB_CLASS_POOL);
         btn.classList.add(...inactiveClasses);
       });
-      const selected = document.getElementById(selectedId);
+      const selected = root.querySelector(`#${selectedId}`);
       if (selected) {
-        selected.classList.remove(...inactiveClasses);
+        selected.classList.remove(...inactiveClasses, ...INACTIVE_TAB_CLASS_POOL);
         selected.classList.add(...activeClasses);
       }
     };
@@ -51,7 +70,7 @@ const Home1Bool = () => {
       contentId: (v) => `platform-${v}`,
       buttonSelector: '#btn-windows, #btn-mac, #btn-linux',
       buttonId: (v) => `btn-${v}`,
-      inactiveClasses: ['text-gray-600', 'hover:bg-gray-100'],
+      inactiveClasses: INACTIVE_TAB_CLASSES,
       activeClasses: () => [ACTIVE_BG, 'text-white', 'shadow-md'],
     });
     const codexPlatformToggle = createTabToggle({
@@ -59,7 +78,7 @@ const Home1Bool = () => {
       contentId: (v) => `codex-platform-${v}`,
       buttonSelector: '#codex-btn-windows, #codex-btn-mac, #codex-btn-linux',
       buttonId: (v) => `codex-btn-${v}`,
-      inactiveClasses: ['text-gray-600', 'hover:bg-gray-100'],
+      inactiveClasses: INACTIVE_TAB_CLASSES,
       activeClasses: () => [ACTIVE_BG, 'text-white'],
       resetClasses: [ACTIVE_BG, 'text-white', 'shadow-md'],
     });
@@ -68,7 +87,7 @@ const Home1Bool = () => {
       contentId: (v) => `codex-setup-platform-${v}`,
       buttonSelector: '#codex-setup-btn-windows, #codex-setup-btn-mac, #codex-setup-btn-linux',
       buttonId: (v) => `codex-setup-btn-${v}`,
-      inactiveClasses: ['text-gray-600', 'hover:bg-gray-100'],
+      inactiveClasses: INACTIVE_TAB_CLASSES,
       activeClasses: () => [ACTIVE_BG, 'text-white', 'shadow-md'],
     });
     const geminiSetupToggle = createTabToggle({
@@ -76,7 +95,7 @@ const Home1Bool = () => {
       contentId: (v) => `gemini-setup-platform-${v}`,
       buttonSelector: '#gemini-setup-btn-windows, #gemini-setup-btn-mac, #gemini-setup-btn-linux',
       buttonId: (v) => `gemini-setup-btn-${v}`,
-      inactiveClasses: ['text-gray-600', 'hover:bg-gray-100'],
+      inactiveClasses: INACTIVE_TAB_CLASSES,
       activeClasses: () => [ACTIVE_BG, 'text-white', 'shadow-md'],
     });
     const productToggle = createTabToggle({
@@ -84,7 +103,7 @@ const Home1Bool = () => {
       contentId: (v) => `product-${v}`,
       buttonSelector: '#product-btn-claude, #product-btn-codex',
       buttonId: (v) => `product-btn-${v === 'claude-code' ? 'claude' : 'codex'}`,
-      inactiveClasses: ['text-gray-600', 'hover:bg-gray-100'],
+      inactiveClasses: INACTIVE_TAB_CLASSES,
       activeClasses: () => [ACTIVE_BG, 'text-white', 'shadow-md'],
       resetClasses: [ACTIVE_BG, 'text-white', 'shadow-md'],
     });
@@ -152,7 +171,8 @@ const Home1Bool = () => {
     };
 
     const enhanceCodeBlocks = (scopeSelector = '#codex-setup') => {
-      const root = document.querySelector(scopeSelector);
+      const pageRoot = getRoot();
+      const root = pageRoot?.querySelector(scopeSelector);
       if (!root) return;
       root.querySelectorAll('.code-block').forEach((block) => {
         if (!block.querySelector('code')) return;
@@ -186,6 +206,25 @@ const Home1Bool = () => {
       }, 16);
     };
 
+    const getScrollContainer = () => (
+      scrollContainers.find((el) => el.scrollHeight > el.clientHeight + 1) || null
+    );
+
+    const scrollToTarget = (targetEl, behavior = 'smooth') => {
+      const container = getScrollContainer();
+      if (container) {
+        const containerTop = container.getBoundingClientRect().top;
+        const targetTop = targetEl.getBoundingClientRect().top;
+        container.scrollTo({
+          top: targetTop - containerTop + container.scrollTop - ANCHOR_OFFSET,
+          behavior,
+        });
+        return;
+      }
+      const top = targetEl.getBoundingClientRect().top + window.pageYOffset - ANCHOR_OFFSET;
+      window.scrollTo({ top, behavior });
+    };
+
     const createRipple = (event, element) => {
       const ripple = document.createElement('span');
       const rect = element.getBoundingClientRect();
@@ -199,23 +238,25 @@ const Home1Bool = () => {
     };
 
     const clickHandler = (event) => {
+      const root = getRoot();
+      if (!root) return;
       const target = event.target;
       if (!target) return;
       const anchor = target.closest('a[href^="#"]');
       if (anchor) {
+        if (!root.contains(anchor)) return;
         event.preventDefault();
         const href = anchor.getAttribute('href');
         if (href) {
-          const targetEl = document.querySelector(href);
+          const targetEl = root.querySelector(href);
           if (targetEl) {
-            const top = targetEl.getBoundingClientRect().top + window.pageYOffset - ANCHOR_OFFSET;
-            window.scrollTo({ top, behavior: 'smooth' });
+            scrollToTarget(targetEl);
             history.pushState(null, '', href);
           }
         }
       }
       // ripple 限定在 Home1Bool 内部，避免污染主站 HeaderBar / Sidebar 按钮
-      if (target.closest('.home1bool-root')) {
+      if (root.contains(target)) {
         const rippleTarget = target.closest('a, button');
         if (rippleTarget) createRipple(event, rippleTarget);
       }
@@ -232,20 +273,27 @@ const Home1Bool = () => {
 
     document.addEventListener('click', clickHandler);
     window.addEventListener('scroll', handleScroll, { passive: true });
+    scrollContainers = Array.from(
+      document.querySelectorAll('.semi-layout, .semi-layout-content'),
+    ).filter((el) => el.scrollHeight > el.clientHeight + 1);
+    scrollContainers.forEach((el) => {
+      el.addEventListener('scroll', handleScroll, { passive: true });
+    });
 
-    reveals = Array.from(document.querySelectorAll('.fade-in-up'));
+    const root = getRoot();
+    reveals = root ? Array.from(root.querySelectorAll('.fade-in-up')) : [];
     revealOnScroll();
     codexSetupToggle('windows');
     enhanceCodeBlocks('#codex-setup');
 
     const handleInitialHash = () => {
       const hash = window.location.hash;
+      const root = getRoot();
       if (hash) {
         setTimeout(() => {
-          const targetEl = document.querySelector(hash);
+          const targetEl = root?.querySelector(hash);
           if (targetEl) {
-            const top = targetEl.getBoundingClientRect().top + window.pageYOffset - ANCHOR_OFFSET;
-            window.scrollTo({ top, behavior: 'smooth' });
+            scrollToTarget(targetEl);
           }
         }, 100);
       }
@@ -255,6 +303,13 @@ const Home1Bool = () => {
     return () => {
       document.removeEventListener('click', clickHandler);
       window.removeEventListener('scroll', handleScroll);
+      scrollContainers.forEach((el) => {
+        el.removeEventListener('scroll', handleScroll);
+      });
+      if (scrollTimeout !== null) {
+        window.clearTimeout(scrollTimeout);
+      }
+      document.body.classList.remove('home1bool-page');
       delete window.showPlatform;
       delete window.showCodeXPlatform;
       delete window.showCodeXSetupPlatform;
@@ -266,7 +321,7 @@ const Home1Bool = () => {
   }, []);
 
   return (
-    <div className="home1bool-root" data-theme={actualTheme}>
+    <div ref={rootRef} className="home1bool-root" data-theme={actualTheme}>
       <HelpContent config={APP_CONFIG} />
     </div>
   );
